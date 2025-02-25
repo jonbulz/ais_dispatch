@@ -1,0 +1,49 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    container_name: ais_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ais_user
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: ais_data
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  listener:
+    build: ./listener
+    container_name: ais_listener
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://ais_user:1234@db:5432/ais_data
+      AIS_HOST: "127.0.0.2"
+      AIS_PORT: 9090
+    volumes:
+      - ./listener:/app
+      - ./utils:/app/utils
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["python", "listener.py"]
+
+  dispatch:
+    build: ./dispatch
+    container_name: ais_dispatch
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://ais_user:1234@db:5432/ais_data
+      REMOTE_HOST: https://example.com/endpoint
+    volumes:
+      - ./dispatch:/app
+      - ./utils:/app/utils
+    command: ["python", "dispatch.py"]
+
+volumes:
+  postgres_data:
