@@ -116,7 +116,7 @@ class Dispatcher:
             if not self.can_send_data(payload):
                 break
             self._dispatch(payload)
-            time.sleep(get_config_value("interval"))
+            time.sleep(int(get_config_value("interval")))
 
 
 if __name__ == "__main__":
