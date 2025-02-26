@@ -4,7 +4,8 @@ import csv
 import time
 import json
 from urllib.parse import urljoin
-from utils.db import get_config_value, fetch_data, update_data_sent_size
+from utils.db import get_config_value, fetch_data, update_data_sent_size, update_sent_at_timestamp
+from datetime import datetime
 
 
 class Dispatcher:
@@ -115,7 +116,11 @@ class Dispatcher:
             payload = self._ais_to_csv(data)
             if not self.can_send_data(payload):
                 break
-            self._dispatch(payload)
+            response = self._dispatch(payload)
+            if response.status_code == 200:
+                for id, row in data:
+                    timestamp = datetime.now()
+                    update_sent_at_timestamp(id, timestamp)
             time.sleep(int(get_config_value("interval")))
 
 

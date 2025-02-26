@@ -25,7 +25,7 @@ def insert_data(pk, payload):
 def fetch_data():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT id, payload FROM data ORDER BY received_at ASC")
+    cursor.execute("SELECT id, payload FROM data WHERE sent_at is null ORDER BY received_at ASC")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -50,6 +50,19 @@ def update_data_sent_size(size):
         SET value = (value::BIGINT + %s)::TEXT
         WHERE key = 'data_sent';
     """, (size,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def update_sent_at_timestamp(id, timestamp):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE data
+        SET sent_at= %s
+        WHERE id = %s;
+    """, (timestamp, id,))
     conn.commit()
     cursor.close()
     conn.close()
