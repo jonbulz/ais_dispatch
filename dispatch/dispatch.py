@@ -1,5 +1,4 @@
 import requests
-import os
 import io
 import csv
 import time
@@ -10,9 +9,9 @@ from utils.db import get_config_value, fetch_data, update_data_sent_size
 
 class Dispatcher:
     def __init__(self):
-        self.remote_host = os.getenv("REMOTE_HOST")
-        self.user = os.getenv("REMOTE_USER")
-        self.secret = os.getenv("REMOTE_SECRET")
+        self.remote_host = get_config_value("remote_host")
+        self.user = get_config_value("remote_user")
+        self.secret = get_config_value("remote_secret")
         self.token = None
 
     @staticmethod
@@ -49,7 +48,7 @@ class Dispatcher:
         return csv_data
 
     def _get_new_token(self):
-        url = urljoin(self.remote_host, "token")
+        url = urljoin(self.remote_host, "token/")
         headers = {"Content-Type": "application/json"}
         credentials = {"username": self.user, "password": self.secret}
         data = json.dumps(credentials)
@@ -105,7 +104,7 @@ class Dispatcher:
         return response
 
     def _dispatch(self, payload):
-        url = urljoin(self.remote_host, "ais/add")
+        url = urljoin(self.remote_host, "ais/add/")
         return self._authenticate_request("POST", url, data=payload)
 
     def start_dispatch(self):

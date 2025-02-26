@@ -22,8 +22,6 @@ services:
       - db
     environment:
       DATABASE_URL: postgresql://ais_user:1234@db:5432/ais_data
-      AIS_HOST: "127.0.0.2"
-      AIS_PORT: 9090
     volumes:
       - ./listener:/app
       - ./utils:/app/utils
@@ -39,7 +37,6 @@ services:
       - db
     environment:
       DATABASE_URL: postgresql://ais_user:1234@db:5432/ais_data
-      REMOTE_HOST: https://example.com/endpoint
     volumes:
       - ./dispatch:/app
       - ./utils:/app/utils

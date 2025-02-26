@@ -1,11 +1,10 @@
-import os
 import time
 import json
-from utils.db import insert_data
+from utils.db import insert_data, get_config_value
 from pyais import TCPConnection
 
-HOST = os.getenv("AIS_HOST")
-PORT = int(os.getenv("AIS_PORT"))
+HOST = get_config_value("ais_host")
+PORT = get_config_value("ais_port")
 
 
 def ais_message_to_json(msg):
