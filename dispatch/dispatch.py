@@ -17,8 +17,8 @@ class Dispatcher:
 
     @staticmethod
     def can_send_data(payload):
-        data_max = get_config_value("data_max")
-        data_sent = get_config_value("data_sent")
+        data_max = int(get_config_value("data_max") or 0)
+        data_sent = int(get_config_value("data_sent") or 0)
         return len(payload) <= data_max - data_sent
 
     @staticmethod
@@ -34,9 +34,10 @@ class Dispatcher:
         required = ["timestamp", "identifier", "lat", "lon"]
         writer = csv.DictWriter(out, fieldnames=cols)
         writer.writeheader()
-        for identifier, vals in data.items():
+        for identifier, vals in data:
             # DictWriter is strict about matching the columns
             # so we need to filter our values
+            vals = json.loads(vals)
             vals = {k: v for k, v in vals.items() if k in cols}
             incomplete_data = {key for key in required if not vals.get(key)}
             if incomplete_data:
