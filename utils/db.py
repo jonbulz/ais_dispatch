@@ -11,7 +11,12 @@ def get_db_connection():
 def insert_data(pk, payload):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE data SET payload = %s WHERE id = %s", (payload, pk))
+    cursor.execute("""
+        INSERT INTO data (id, payload)
+        VALUES (%s, %s)
+        ON CONFLICT (id)
+        DO UPDATE SET payload = EXCLUDED.payload
+    """, (pk, payload))
     conn.commit()
     cursor.close()
     conn.close()
