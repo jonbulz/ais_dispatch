@@ -111,11 +111,13 @@ class Dispatcher:
     def start_dispatch(self):
         while True:
             if not self.is_active():
-                break
+                time.sleep(int(get_config_value("interval")))
+                continue
             data = fetch_data()
             payload = self._ais_to_csv(data)
             if not self.can_send_data(payload):
-                break
+                time.sleep(int(get_config_value("interval")))
+                continue
             response = self._dispatch(payload)
             if response.status_code == 200:
                 for id, row in data:
