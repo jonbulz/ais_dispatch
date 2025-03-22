@@ -42,6 +42,17 @@ def get_config_value(key):
     return result[0] if result else None
 
 
+def update_config_value(key, value):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE config SET value = %s WHERE key = %s;
+    """, (value, key))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
 def update_data_sent_size(size):
     conn = get_db_connection()
     cursor = conn.cursor()

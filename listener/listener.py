@@ -37,6 +37,8 @@ def listen_tcp():
         data = ais_message_to_json(decoded)
         insert_data(mmsi, data)
 
+# todo listen_udp
+
 
 if __name__ == "__main__":
     listen_tcp()

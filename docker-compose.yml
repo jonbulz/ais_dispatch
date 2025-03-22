@@ -42,5 +42,20 @@ services:
       - ./utils:/app/utils
     command: ["python", "dispatch.py"]
 
+  config_ui:
+    build: ./ui
+    container_name: ais_ui
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://ais_user:1234@db:5432/ais_data
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./ui:/app
+      - ./utils:/app/utils
+    command: ["python", "app.py"]
+
 volumes:
   postgres_data:
