@@ -110,20 +110,25 @@ class Dispatcher:
 
     def start_dispatch(self):
         while True:
-            if not self.is_active():
+            try:
+                if not self.is_active():
+                    time.sleep(5)
+                    continue
+                data = fetch_data()
+                payload = self._ais_to_csv(data)
+                if not self.can_send_data(payload):
+                    time.sleep(int(get_config_value("interval")))
+                    continue
+                response = self._dispatch(payload)
+                if response.status_code == 200:
+                    for id, row in data:
+                        timestamp = datetime.now()
+                        update_sent_at_timestamp(id, timestamp)
                 time.sleep(int(get_config_value("interval")))
-                continue
-            data = fetch_data()
-            payload = self._ais_to_csv(data)
-            if not self.can_send_data(payload):
-                time.sleep(int(get_config_value("interval")))
-                continue
-            response = self._dispatch(payload)
-            if response.status_code == 200:
-                for id, row in data:
-                    timestamp = datetime.now()
-                    update_sent_at_timestamp(id, timestamp)
-            time.sleep(int(get_config_value("interval")))
+            except Exception as e:
+                # avoid infinite crash loop
+                print(e)
+                time.sleep(5)
 
 
 if __name__ == "__main__":
