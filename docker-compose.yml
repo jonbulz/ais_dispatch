@@ -22,6 +22,8 @@ services:
       - db
     environment:
       DATABASE_URL: $DATABASE_URL
+      AIS_HOST: $AIS_HOST
+      AIS_PORT: $AIS_PORT
     volumes:
       - ./listener:/app
       - ./utils:/app/utils
@@ -37,6 +39,9 @@ services:
       - db
     environment:
       DATABASE_URL: $DATABASE_URL
+      REMOTE_SERVER_ADDRESS: $REMOTE_SERVER_ADDRESS
+      REMOTE_SERVER_USER: $REMOTE_SERVER_USER
+      REMOTE_SERVER_PW: $REMOTE_SERVER_PW
     volumes:
       - ./dispatch:/app
       - ./utils:/app/utils

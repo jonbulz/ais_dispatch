@@ -1,5 +1,6 @@
 import requests
 import io
+import os
 import csv
 import time
 import json
@@ -10,9 +11,9 @@ from datetime import datetime
 
 class Dispatcher:
     def __init__(self):
-        self.remote_host = get_config_value("remote_host")
-        self.user = get_config_value("remote_user")
-        self.secret = get_config_value("remote_secret")
+        self.remote_host = os.getenv("REMOTE_SERVER_ADDRESS")
+        self.user = os.getenv("REMOTE_SERVER_USER")
+        self.secret = os.getenv("REMOTE_SERVER_PW")
         self.token = None
 
     @staticmethod
