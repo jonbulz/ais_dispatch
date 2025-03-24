@@ -1,25 +1,46 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, jsonify
 from utils.db import get_config_value, update_config_value
+from forms import AISDispatcherForm, DispatchActiveForm
+
+from config import Config
+
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
 
 @app.route("/", methods=["GET", "POST"])
+@app.route("/ais", methods=["GET", "POST"])
 def index():
-    interval = get_config_value("interval")
     active = get_config_value("active")
-    config = {"interval": interval, "active": active}
+    if active:
+        return redirect("/sending")
+    config_form = AISDispatcherForm()
+    if config_form.validate_on_submit():
+        update_config_value("active", 1)
+        update_config_value("interval", config_form.dispatch_interval.data)
+        return redirect(url_for("sending"))
 
-    if request.method == "POST":
-        new_interval = request.form["interval"]
-        new_active = request.form["active"]
+    return render_template("ais.html", form=config_form)
 
-        update_config_value("interval", new_interval)
-        update_config_value("active", new_active)
 
+@app.route("/sending", methods=["GET", "POST"])
+def sending():
+    active = get_config_value("active")
+    if not active:
         return redirect(url_for("index"))
+    dispatch_active_form = DispatchActiveForm()
+    if dispatch_active_form.validate_on_submit():
+        update_config_value("active", "")
+        return redirect(url_for("index"))
+    return render_template(
+        "dispatching.html", title="Dispatching", form=dispatch_active_form
+    )
 
-    return render_template("index.html", config=config)
+
+@app.route("/data_size", methods=["GET"])
+def data_size():
+    return jsonify({"total_sent": get_config_value("data_sent")})
 
 
 if __name__ == "__main__":
