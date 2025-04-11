@@ -19,6 +19,8 @@ def index():
     if config_form.validate_on_submit():
         update_config_value("active", 1)
         update_config_value("interval", config_form.dispatch_interval.data)
+        update_config_value("data_max", config_form.data_max.data)
+        update_config_value("data_sent", 0)
         return redirect(url_for("sending"))
 
     return render_template("ais.html", form=config_form)

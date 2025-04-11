@@ -77,3 +77,19 @@ def update_sent_at_timestamp(id, timestamp):
     conn.commit()
     cursor.close()
     conn.close()
+
+
+def update_status(service, status, info=None):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO status (service, status, info)
+        VALUES (%s, %s, %s)
+        ON CONFLICT (service)
+        DO UPDATE SET 
+            status = EXCLUDED.status,
+            info = EXCLUDED.info;
+    """, (service, status, info))
+    conn.commit()
+    cursor.close()
+    conn.close()

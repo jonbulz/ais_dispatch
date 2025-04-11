@@ -1,9 +1,10 @@
 import time
 import json
 import os
-from utils.db import insert_data
+from utils.db import insert_data, update_status
 from pyais import TCPConnection
 
+SERVICE = "listener"
 HOST = os.getenv("AIS_HOST")
 PORT = int(os.getenv("AIS_PORT"))
 
@@ -41,5 +42,17 @@ def listen_tcp():
 # todo listen_udp
 
 
+def run_listener():
+    while True:
+        update_status(SERVICE, "active")
+        try:
+            listen_tcp()
+        except Exception as e:
+            err_msg = str(e) or repr(e)
+            update_status(SERVICE, "error", err_msg)
+            print(f"Error: {err_msg}")
+            time.sleep(5)
+
+
 if __name__ == "__main__":
-    listen_tcp()
+    run_listener()

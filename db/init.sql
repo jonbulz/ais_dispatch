@@ -10,3 +10,16 @@ CREATE TABLE IF NOT EXISTS data (
     sent_at TIMESTAMP,
     payload TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS status (
+    id SERIAL PRIMARY KEY,
+    service TEXT UNIQUE NOT NULL,
+    status TEXT NOT NULL,
+    info TEXT
+);
+
+INSERT INTO config (key, value) VALUES
+('active', ''),
+('data_sent', '0'),
+('data_max', '0'),
+('interval', '1');
