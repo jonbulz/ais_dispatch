@@ -36,8 +36,14 @@ def sending():
     if dispatch_active_form.validate_on_submit():
         update_config_value("active", "")
         return redirect(url_for("index"))
+    listener_status = get_status("listener")
+    dispatcher_status = get_status("dispatcher")
     return render_template(
-        "dispatching.html", title="Dispatching", form=dispatch_active_form
+        "dispatching.html",
+        title="Dispatching",
+        form=dispatch_active_form,
+        listener_status=listener_status,
+        dispatcher_status=dispatcher_status,
     )
 
 

@@ -21,6 +21,18 @@
                 background-color: red;
             }
         </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            // Function to update the sent data size in real-time
+            function updateDataSize() {
+                $.get('/data_size', function(data) {
+                    $('#data_size').text(data.total_sent + ' bytes');
+                });
+            }
+
+            // Poll the server every 2 seconds to get the data size
+            setInterval(updateDataSize, 2000);
+        </script>
     </head>
     <body>
         {% block content %}{% endblock %}

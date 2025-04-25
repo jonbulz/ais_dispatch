@@ -1,0 +1,12 @@
+{% if dispatcher_status %}
+{% set status_class = 'status-' + dispatcher_status.status %}
+<p>
+    <strong>Dispatcher Status:</strong>
+    <span class="status {{ status_class }}">{{dispatcher_status.status}}</span>
+</p>
+{% if dispatcher_status.info %}
+<p>{{dispatcher_status.info}}</p>
+{% endif %}
+{% else %}
+<p>No dispatcher status info available. Please check your configuration!</p>
+{% endif %}
