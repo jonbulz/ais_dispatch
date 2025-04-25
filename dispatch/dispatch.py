@@ -4,9 +4,14 @@ import os
 import csv
 import time
 import json
+import sys
+import signal
 from urllib.parse import urljoin
-from utils.db import get_config_value, fetch_data, update_data_sent_size, update_sent_at_timestamp
+from utils.db import get_config_value, fetch_data, update_data_sent_size, update_sent_at_timestamp, update_status
 from datetime import datetime
+
+SERVICE = "dispatcher"
+SYSTEM_EXIT = False
 
 
 class Dispatcher:
@@ -113,8 +118,10 @@ class Dispatcher:
         while True:
             try:
                 if not self.is_active():
+                    update_status(SERVICE, "inactive")
                     time.sleep(5)
                     continue
+                update_status(SERVICE, "active")
                 data = fetch_data()
                 payload = self._ais_to_csv(data)
                 if not self.can_send_data(payload):
@@ -128,8 +135,22 @@ class Dispatcher:
                 time.sleep(int(get_config_value("interval")))
             except Exception as e:
                 # avoid infinite crash loop
-                print(e)
+                err_msg = str(e) or repr(e)
+                print(f"Error: {err_msg}")
+                update_status(SERVICE, "error", err_msg)
                 time.sleep(5)
+
+
+def handle_shutdown(signum, frame):
+    global SYSTEM_EXIT
+    print(f"Signal {signum} received. Shutting down...")
+    SYSTEM_EXIT = True
+    update_status(SERVICE, "inactive")
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, handle_shutdown)
+signal.signal(signal.SIGTERM, handle_shutdown)
 
 
 if __name__ == "__main__":
