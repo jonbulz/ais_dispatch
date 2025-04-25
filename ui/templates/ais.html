@@ -5,11 +5,7 @@
     <div><a href="/adsb">ADSB Dispatcher</a></div>
     <hr>
     <h1>AIS Dispatcher</h1>
-    {% if listener_status %}
-        <p><strong>Listener Status:</strong> {{listener_status}}</p>
-    {% else %}
-        <p>No listener status info available. Please check your configuration.</p>
-    {% endif %}
+    {% include "listener_status_indicator.html" %}
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>

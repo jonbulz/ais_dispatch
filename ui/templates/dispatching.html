@@ -19,6 +19,7 @@
 </head>
 <body>
 <h1>Dispatching AIS Data to Remote Server</h1>
+{% include "listener_status_indicator.html" %}
 <h3>Total Data Sent: <span id="data_size">0 bytes</span></h3>
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}

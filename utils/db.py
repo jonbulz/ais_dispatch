@@ -83,12 +83,12 @@ def get_status(service):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT status FROM status WHERE service = %s
+        SELECT status, info FROM status WHERE service = %s
     """, (service,))
     result = cursor.fetchone()
     cursor.close()
     conn.close()
-    return result[0] if result else None
+    return {"status": result[0], "info": result[1]} if result else None
 
 
 def update_status(service, status, info=None):

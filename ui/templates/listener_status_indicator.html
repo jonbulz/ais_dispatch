@@ -1,0 +1,12 @@
+{% if listener_status %}
+{% set status_class = 'status-' + listener_status.status %}
+<p>
+    <strong>Listener Status:</strong>
+    <span class="status {{ status_class }}">{{listener_status.status}}</span>
+</p>
+{% if listener_status.info %}
+<p>{{listener_status.info}}</p>
+{% endif %}
+{% else %}
+<p>No listener status info available. Please check your configuration!</p>
+{% endif %}
