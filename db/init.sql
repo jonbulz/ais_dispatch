@@ -23,3 +23,7 @@ INSERT INTO config (key, value) VALUES
 ('data_sent', '0'),
 ('data_max', '0'),
 ('interval', '1');
+
+INSERT INTO status (service, status) VALUES
+('dispatcher', 'inactive'),
+('listener', 'inactive');
