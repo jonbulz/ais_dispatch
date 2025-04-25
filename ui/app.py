@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, jsonify
-from utils.db import get_config_value, update_config_value
+from utils.db import get_config_value, update_config_value, get_status
 from forms import AISDispatcherForm, DispatchActiveForm
 
 from config import Config
@@ -23,7 +23,8 @@ def index():
         update_config_value("data_sent", 0)
         return redirect(url_for("sending"))
 
-    return render_template("ais.html", form=config_form)
+    listener_status = get_status("listener")
+    return render_template("ais.html", form=config_form, listener_status=listener_status)
 
 
 @app.route("/sending", methods=["GET", "POST"])
