@@ -12,12 +12,13 @@ def insert_data(pk, payload):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO data (id, payload)
-        VALUES (%s, %s)
+        INSERT INTO data (id, payload, received_at)
+        VALUES (%s, %s, NOW())
         ON CONFLICT (id)
         DO UPDATE SET 
             payload = EXCLUDED.payload,
-            sent_at = NULL
+            sent_at = NULL,
+            received_at = NOW()
     """, (pk, payload))
     conn.commit()
     cursor.close()
