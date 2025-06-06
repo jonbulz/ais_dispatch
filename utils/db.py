@@ -15,7 +15,9 @@ def insert_data(pk, payload):
         INSERT INTO data (id, payload)
         VALUES (%s, %s)
         ON CONFLICT (id)
-        DO UPDATE SET payload = EXCLUDED.payload
+        DO UPDATE SET 
+            payload = EXCLUDED.payload,
+            sent_at = NULL
     """, (pk, payload))
     conn.commit()
     cursor.close()
