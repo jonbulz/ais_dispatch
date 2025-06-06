@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired
 
 
 class AISDispatcherForm(FlaskForm):
-    data_max = IntegerField("Maximum Data")
+    data_max = IntegerField("Maximum Data (in kB)")
     dispatch_interval = IntegerField("Interval in s", validators=[DataRequired()])
     start_dispatch = SubmitField("Start")
 
