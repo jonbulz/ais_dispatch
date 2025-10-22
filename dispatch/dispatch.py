@@ -124,7 +124,7 @@ class Dispatcher:
                 update_status(SERVICE, "active")
                 data = fetch_data()
                 payload = self._ais_to_csv(data)
-                if not self.can_send_data(payload):
+                if not data or not self.can_send_data(payload):
                     time.sleep(int(get_config_value("interval")))
                     continue
                 response = self._dispatch(payload)
